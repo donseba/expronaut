@@ -13,7 +13,7 @@ Whether you're crafting conditions for template rendering or just dabbling in th
 
 Embark on your journey with Expronaut by incorporating it into your Go projects. Here's how to get started:
 
-## Installation
+### Installation
 
 Ensure you have Go installed on your system, then fetch the Expronaut package:
 
@@ -22,45 +22,45 @@ go get github.com/donseba/expronaut
 ```
 
 ## Usage Examples
-Evaluating Expressions in Templates
+
+### complex example
 
 ```go
-package main
+func TestOrderOfOperations(t *testing.T) {
+	input := "-2 + 3 * 4 - 5 // 2 ^ 2 << 1 >> 2 % 3"
 
-import (
-    "bytes"
-    "text/template"
-    "testing"
+	out, err := Evaluate(context.TODO(), input)
+	if err != nil {
+		t.Error(err)
+	}
 
-    "github.com/donseba/expronaut"
-)
-
-func TestExp(t *testing.T) {
-    content := `{{ if exp "foo == 5" "foo" .foo }} OK {{ else }} NOT OK {{ end }}`
-
-    templ, err := template.New("test").Funcs(map[string]any{
-        "exp": expronaut.Exp,
-    }).Parse(content)
-    if err != nil {
-        t.Fatal(err)
-    }
-
-    data := map[string]any{
-        "foo": 5,
-    }
-
-    var wr bytes.Buffer
-    err = templ.ExecuteTemplate(&wr, "test", data)
-    if err != nil {
-        t.Fatal(err)
-    }
-
-    if wr.String() != " OK " {
-        t.Fatalf("expected OK, got %s", wr.String())
-    }
+	expected := 4
+	if !equalNumber(out, expected) {
+		t.Errorf("expected %v, got %v", expected, out)
+	}
 }
 ```
-## Converting expressions to Go Template Strings
+This tree visually represents how the operations in the expression are structured and the order in which they would be evaluated, starting from the bottom operations moving up.
+```markdown
+                              RIGHT_SHIFT
+                              /          \
+                             /            \
+                          LEFT_SHIFT       MODULO
+                           /     \          /   \
+                          /       \        /     \
+                       MINUS       1      2       3
+                      /    \
+                     /      \
+                  PLUS     DIVIDE_INTEGER
+                  /   \        /        \
+                -2    MULTIPLY          EXPONENT
+                        /  \            /      \
+                       3    4          2        2
+```
+
+
+### Converting expressions to Go Template Strings
+please not this only works for the most basic expressions, for more complex expressions there is still lost to do to make it work.
 
 ```go
 func TestNewParserVariableBool(t *testing.T) {
@@ -118,40 +118,6 @@ Expronaut transforms your intricate expressions into results or Go template stri
 - **map (Map):** Applies a function to each element of a list (Considered as a function call, `map(int[1,2,3,4,5], double)`). The second argument is the function to apply to the list. The first argument is the list of numbers.
 - 
 
-### complex example
-
-```go
-func TestOrderOfOperations(t *testing.T) {
-	input := "-2 + 3 * 4 - 5 // 2 ^ 2 << 1 >> 2 % 3"
-
-	out, err := Evaluate(context.TODO(), input)
-	if err != nil {
-		t.Error(err)
-	}
-
-	expected := 4
-	if !equalNumber(out, expected) {
-		t.Errorf("expected %v, got %v", expected, out)
-	}
-}
-```
-This tree visually represents how the operations in the expression are structured and the order in which they would be evaluated, starting from the bottom operations moving up.
-```markdown
-                              RIGHT_SHIFT
-                              /          \
-                             /            \
-                          LEFT_SHIFT       MODULO
-                           /     \          /   \
-                          /       \        /     \
-                       MINUS       1      2       3
-                      /    \
-                     /      \
-                  PLUS     DIVIDE_INTEGER
-                  /   \        /        \
-                -2    MULTIPLY          EXPONENT
-                        /  \            /      \
-                       3    4          2        2
-```
 
 ##  The Complementary BuiltInFunctions (bifs): A Swashbuckling Toolkit
 
@@ -234,10 +200,23 @@ fmt.Println(wr.String())
 // Output: Result: 12 | 5
 ```
 
-## Dive Deeper
+## Embark on an Expronaut Adventure
 
-Dive into the world of Expronaut, where documentation, test cases, and examples await to guide you through the capabilities of this powerful tool.
+Step into the realm of Expronaut, a haven where extensive documentation, comprehensive test cases, and illustrative examples shine a light on the boundless capabilities of this enchanting tool.
 
-Designed out of necessity for a tool capable of interpreting expressions within a larger package aimed at parsing PHP Blade templates and executing them in Go, Expronaut has evolved beyond its practical origins. Whether you're tackling a specific problem or simply indulging in the joy of exploring expression evaluation, Expronaut brings a unique blend of utility and enchantment to your Go projects.
+Born from the essential need to decode and execute expressions within the intricate universe of PHP Blade templates in Go, Expronaut transcends its initial purpose, morphing into a vessel of exploration and discovery. It's not just a tool; it's a gateway to solving complex challenges and savoring the thrill of expression evaluation, all within the rich landscape of Go programming.
 
-Embark on a journey with Expronaut, a place where logic intertwines with a touch of magic, unlocking endless possibilities for your expressions. Let the adventure begin!
+With Expronaut, embark on a voyage where logic seamlessly melds with magic, crafting a world brimming with limitless possibilities. Here, expressions aren't just evaluated—they're brought to life, setting the stage for an epic journey of coding sorcery and innovation.
+
+Let your curiosity be your compass as you navigate through the wonders of Expronaut. Here, in the confluence of practicality and imagination, your Go projects will find their wings. The quest begins now.
+
+## what's next
+Integration with LLM's is one of the next steps, this will allow for a more dynamic and flexible way of working with expressions.
+It would be nice to do something like : 
+```go
+	input := `ai("gpt", "is the following 42?", ( 21 + 21 ) )`
+```
+
+## License
+
+Expronaut is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.

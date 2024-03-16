@@ -402,6 +402,19 @@ func TestArrayMap(t *testing.T) {
 	}
 }
 
+func TestAiGPT(t *testing.T) {
+	input := `ai("gpt", "is the following 42?", ( 21 + 21 ) )`
+
+	_, err := Evaluate(context.TODO(), input)
+	if err != nil {
+		errMessage := `You didn't provide an API key. You need to provide your API key in an Authorization header using Bearer auth (i.e. Authorization: Bearer YOUR_KEY), or as the password field (with blank username) if you're accessing the API from your browser and are prompted for a username and password. You can obtain an API key from https://platform.openai.com/account/api-keys.`
+		if errMessage != err.Error() {
+			t.Error(err)
+			return
+		}
+	}
+}
+
 func equalNumber(a, b any) bool {
 	toFloat64 := func(v any) (float64, bool) {
 		rv := reflect.ValueOf(v)

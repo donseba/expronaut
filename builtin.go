@@ -2,6 +2,7 @@ package expronaut
 
 import (
 	"fmt"
+	"github.com/donseba/expronaut/llm"
 	"math"
 	"time"
 )
@@ -40,6 +41,7 @@ func init() {
 	b["sqrt"] = b.Sqrt
 	b["sum"] = b.Sum
 	b["time"] = b.Time
+	b["ai"] = b.Ai
 }
 
 func (b bif) Date(args []any) (any, error) {
@@ -515,5 +517,23 @@ func (b bif) Add(args []any) (any, error) {
 			return a + b, nil
 		}
 	}
+	return nil, nil
+}
+
+func (b bif) Ai(args []any) (any, error) {
+	if len(args) < 2 {
+		return nil, fmt.Errorf("ai function expects two or more arguments")
+	}
+
+	llmProvider, ok := args[0].(string)
+	if !ok {
+		return nil, fmt.Errorf("ai function expects a string argument")
+	}
+
+	switch llmProvider {
+	case "gpt":
+		return llm.ChatGPT(args[1:])
+	}
+
 	return nil, nil
 }
