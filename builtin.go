@@ -11,6 +11,10 @@ type bif map[string]bifFunc
 
 var BuiltinFunctions = bif{}
 
+func RegisterFunction(name string, function bifFunc) {
+	BuiltinFunctions[name] = function
+}
+
 func init() {
 	BuiltinFunctions = bif{}
 
@@ -461,21 +465,6 @@ func (b bif) Double(args []any) (any, error) {
 }
 
 func (b bif) Exp(args []any) (any, error) {
-	/*
-			if left, ok := leftEval.(float64); ok {
-			if right, ok := rightEval.(float64); ok {
-				return math.Pow(left, right), nil
-			} else if right, ok := rightEval.(int); ok {
-				return math.Pow(left, float64(right)), nil
-			}
-		} else if left, ok := leftEval.(int); ok {
-			if right, ok := rightEval.(int); ok {
-				return math.Pow(float64(left), float64(right)), nil
-			} else if right, ok := rightEval.(float64); ok {
-				return math.Pow(float64(left), right), nil
-			}
-		}
-	*/
 	if len(args) != 2 {
 		return nil, fmt.Errorf("exp function expects exactly two arguments")
 	}

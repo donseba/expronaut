@@ -150,11 +150,6 @@ func (p *Parser) primary() ASTNode {
 		expr := p.expression()
 		p.consume(TokenTypeParenRight, "Expect ')' after expression.")
 		return expr
-	//case p.match(TokenTypeSqrt):
-	//	p.consume(TokenTypeParenLeft, "Expect '(' after 'sqrt'.")
-	//	argument := p.expression() // Parse the argument to sqrt
-	//	p.consume(TokenTypeParenRight, "Expect ')' after argument to 'sqrt'.")
-	//	return &SqrtNode{Argument: argument}
 	case p.match(TokenTypeFunction):
 		funcName := p.previous().Literal
 		var arguments []ASTNode
@@ -201,14 +196,6 @@ func (p *Parser) primary() ASTNode {
 
 		return &ArrayNode{Type: arrayType, Elements: elements}
 	}
-
-	//case p.match(TokenTypeFunction):
-	//	funcName := p.previous().Literal
-	//	p.consume(TokenTypeParenLeft, "Expect '(' after function.")
-	//	argument := p.expression() // Parse the argument to function
-	//	p.consume(TokenTypeParenRight, "Expect ')' after argument to function.")
-	//	return &FunctionCallNode{FunctionName: funcName, Argument: []ASTNode{argument}}
-	//}
 
 	return &IntLiteralNode{Value: 0}
 }

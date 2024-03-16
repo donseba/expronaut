@@ -388,7 +388,7 @@ func TestArrayMap(t *testing.T) {
 
 	ctx := context.TODO()
 	ctx = SetVariables(ctx, map[string]any{
-		"double": BuiltinFunctions.Double,
+		"double": BuiltinFunctions.Double, // or BuiltinFunctions["double"]
 	})
 
 	out, err := Evaluate(ctx, input)

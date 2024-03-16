@@ -3,7 +3,6 @@ package expronaut
 import (
 	"context"
 	"fmt"
-	"math"
 	"strings"
 	"time"
 )
@@ -294,35 +293,6 @@ func (n *BooleanLiteralNode) GoTemplate() string {
 		return "true"
 	}
 	return "false"
-}
-
-type SqrtNode struct {
-	Argument ASTNode
-}
-
-func (n *SqrtNode) Evaluate(ctx context.Context) (any, error) {
-	argVal, err := n.Argument.Evaluate(ctx)
-	if err != nil {
-		return nil, err
-	}
-
-	switch v := argVal.(type) {
-	case float64:
-		return math.Sqrt(v), nil
-	case int:
-		return math.Sqrt(float64(v)), nil
-	default:
-		return nil, fmt.Errorf("argument to sqrt must be a number")
-	}
-}
-
-func (n *SqrtNode) String() string {
-	return fmt.Sprintf("sqrt(%s)", n.Argument.String())
-}
-
-func (n *SqrtNode) GoTemplate() string {
-	return fmt.Sprintf("sqrt %s ", n.Argument.GoTemplate())
-	// Implement GoTemplate logic if needed
 }
 
 type FunctionCallNode struct {

@@ -39,7 +39,6 @@ const (
 	TokenTypeExponent           TokenType = "EXPONENT"
 	TokenTypeLeftShift          TokenType = "LEFT_SHIFT"
 	TokenTypeRightShift         TokenType = "RIGHT_SHIFT"
-	//TokenTypeSqrt               TokenType = "SQRT"
 )
 
 func TokenGoTemplate(tok TokenType) string {
