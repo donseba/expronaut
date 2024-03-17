@@ -73,19 +73,19 @@ func (n *BinaryOperationNode) Evaluate(ctx context.Context) (any, error) {
 
 	switch n.Operator {
 	case TokenTypePlus:
-		return BuiltinFunctions.Add([]any{leftEval, rightEval})
+		return BuiltinFunctions.Add(ctx, []any{leftEval, rightEval})
 	case TokenTypeMinus:
-		return BuiltinFunctions.Sub([]any{leftEval, rightEval})
+		return BuiltinFunctions.Sub(ctx, []any{leftEval, rightEval})
 	case TokenTypeMultiply:
-		return BuiltinFunctions.Mul([]any{leftEval, rightEval})
+		return BuiltinFunctions.Mul(ctx, []any{leftEval, rightEval})
 	case TokenTypeDivide:
-		return BuiltinFunctions.Div([]any{leftEval, rightEval})
+		return BuiltinFunctions.Div(ctx, []any{leftEval, rightEval})
 	case TokenTypeDivideInteger:
-		return BuiltinFunctions.DivInt([]any{leftEval, rightEval})
+		return BuiltinFunctions.DivInt(ctx, []any{leftEval, rightEval})
 	case TokenTypeModulo:
-		return BuiltinFunctions.Mod([]any{leftEval, rightEval})
+		return BuiltinFunctions.Mod(ctx, []any{leftEval, rightEval})
 	case TokenTypeExponent:
-		return BuiltinFunctions.Exp([]any{leftEval, rightEval})
+		return BuiltinFunctions.Exp(ctx, []any{leftEval, rightEval})
 	case TokenTypeEqual, TokenTypeNotEqual,
 		TokenTypeLessThan, TokenTypeLessThanOrEqual,
 		TokenTypeGreaterThan, TokenTypeGreaterThanOrEqual:
@@ -312,7 +312,7 @@ func (n *FunctionCallNode) Evaluate(ctx context.Context) (any, error) {
 
 	f, ok := BuiltinFunctions[n.FunctionName]
 	if ok {
-		return f(args)
+		return f(ctx, args)
 	}
 
 	return nil, fmt.Errorf("unknown function: %s", n.FunctionName)
