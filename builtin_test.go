@@ -501,7 +501,7 @@ func TestBif_MapSqrt(t *testing.T) {
 }
 
 func TestBif_MapCustom(t *testing.T) {
-	RegisterFunction("custom", func(ctx context.Context, args []any) (any, error) {
+	RegisterFunction("custom", func(ctx context.Context, args ...any) (any, error) {
 		var out int
 
 		for i, x := range args {

@@ -11,7 +11,7 @@ import (
 	"time"
 )
 
-type bifFunc func(context.Context, []any) (any, error)
+type bifFunc func(context.Context, ...any) (any, error)
 type bif map[string]bifFunc
 
 var BuiltinFunctions = bif{}
@@ -100,7 +100,7 @@ func init() {
 }
 
 // Abs Calculates the absolute value of a number.
-func (bif bif) Abs(ctx context.Context, args []any) (any, error) {
+func (bif bif) Abs(ctx context.Context, args ...any) (any, error) {
 	if len(args) != 1 {
 		return nil, fmt.Errorf("abs function expects a single argument")
 	}
@@ -116,7 +116,7 @@ func (bif bif) Abs(ctx context.Context, args []any) (any, error) {
 }
 
 // Acos Computes the arc cosine of a value; returns the angle in radians.
-func (bif bif) Acos(ctx context.Context, args []any) (any, error) {
+func (bif bif) Acos(ctx context.Context, args ...any) (any, error) {
 	if len(args) != 1 {
 		return nil, fmt.Errorf("acos function expects a single argument")
 	}
@@ -132,7 +132,7 @@ func (bif bif) Acos(ctx context.Context, args []any) (any, error) {
 }
 
 // Add Adds two numbers together.
-func (bif bif) Add(ctx context.Context, args []any) (any, error) {
+func (bif bif) Add(ctx context.Context, args ...any) (any, error) {
 	if len(args) != 2 {
 		return nil, fmt.Errorf("add function expects exactly two arguments got %d", len(args))
 	}
@@ -162,7 +162,7 @@ func (bif bif) Add(ctx context.Context, args []any) (any, error) {
 }
 
 // Ai Calls an AI provider to generate a response.
-func (bif bif) Ai(ctx context.Context, args []any) (any, error) {
+func (bif bif) Ai(ctx context.Context, args ...any) (any, error) {
 	if len(args) < 2 {
 		return nil, fmt.Errorf("ai function expects two or more arguments")
 	}
@@ -181,7 +181,7 @@ func (bif bif) Ai(ctx context.Context, args []any) (any, error) {
 }
 
 // Asin Computes the arc sine of a value; returns the angle in radians.
-func (bif bif) Asin(ctx context.Context, args []any) (any, error) {
+func (bif bif) Asin(ctx context.Context, args ...any) (any, error) {
 	if len(args) != 1 {
 		return nil, fmt.Errorf("asin function expects a single argument")
 	}
@@ -197,7 +197,7 @@ func (bif bif) Asin(ctx context.Context, args []any) (any, error) {
 }
 
 // Atan Computes the arc tangent of a value; returns the angle in radians.
-func (bif bif) Atan(ctx context.Context, args []any) (any, error) {
+func (bif bif) Atan(ctx context.Context, args ...any) (any, error) {
 	if len(args) != 1 {
 		return nil, fmt.Errorf("atan function expects a single argument")
 	}
@@ -213,7 +213,7 @@ func (bif bif) Atan(ctx context.Context, args []any) (any, error) {
 }
 
 // Ceil Rounds a number up to the nearest integer.
-func (bif bif) Ceil(ctx context.Context, args []any) (any, error) {
+func (bif bif) Ceil(ctx context.Context, args ...any) (any, error) {
 	if len(args) != 1 {
 		return nil, fmt.Errorf("ceil function expects a single argument")
 	}
@@ -229,7 +229,7 @@ func (bif bif) Ceil(ctx context.Context, args []any) (any, error) {
 }
 
 // Cos Calculates the cosine of an angle in radians.
-func (bif bif) Cos(ctx context.Context, args []any) (any, error) {
+func (bif bif) Cos(ctx context.Context, args ...any) (any, error) {
 	if len(args) != 1 {
 		return nil, fmt.Errorf("cos function expects a single argument")
 	}
@@ -245,7 +245,7 @@ func (bif bif) Cos(ctx context.Context, args []any) (any, error) {
 }
 
 // Cosh Calculates the hyperbolic cosine of a number.
-func (bif bif) Cosh(ctx context.Context, args []any) (any, error) {
+func (bif bif) Cosh(ctx context.Context, args ...any) (any, error) {
 	if len(args) != 1 {
 		return nil, fmt.Errorf("cosh function expects a single argument")
 	}
@@ -261,7 +261,7 @@ func (bif bif) Cosh(ctx context.Context, args []any) (any, error) {
 }
 
 // Concat Combines two or more arrays into one.
-func (bif bif) Concat(ctx context.Context, args []any) (any, error) {
+func (bif bif) Concat(ctx context.Context, args ...any) (any, error) {
 	if len(args) < 2 {
 		return nil, fmt.Errorf("concat function expects at least two arguments")
 	}
@@ -280,7 +280,7 @@ func (bif bif) Concat(ctx context.Context, args []any) (any, error) {
 }
 
 // Date Parses a string into a date.
-func (bif bif) Date(ctx context.Context, args []any) (any, error) {
+func (bif bif) Date(ctx context.Context, args ...any) (any, error) {
 	if len(args) != 1 {
 		return nil, fmt.Errorf("date function expects a single argument")
 	}
@@ -299,7 +299,7 @@ func (bif bif) Date(ctx context.Context, args []any) (any, error) {
 }
 
 // DateTime Parses a string into a date and time.
-func (bif bif) DateTime(ctx context.Context, args []any) (any, error) {
+func (bif bif) DateTime(ctx context.Context, args ...any) (any, error) {
 	if len(args) != 1 {
 		return nil, fmt.Errorf("datetime function expects a single argument")
 	}
@@ -318,7 +318,7 @@ func (bif bif) DateTime(ctx context.Context, args []any) (any, error) {
 }
 
 // Deg2Rad Converts degrees to radians.
-func (bif bif) Deg2Rad(ctx context.Context, args []any) (any, error) {
+func (bif bif) Deg2Rad(ctx context.Context, args ...any) (any, error) {
 	if len(args) != 1 {
 		return nil, fmt.Errorf("deg2rad function expects a single argument")
 	}
@@ -334,7 +334,7 @@ func (bif bif) Deg2Rad(ctx context.Context, args []any) (any, error) {
 }
 
 // Div Divides two numbers.
-func (bif bif) Div(ctx context.Context, args []any) (any, error) {
+func (bif bif) Div(ctx context.Context, args ...any) (any, error) {
 	if len(args) != 2 {
 		return nil, fmt.Errorf("div function expects exactly two arguments")
 	}
@@ -359,7 +359,7 @@ func (bif bif) Div(ctx context.Context, args []any) (any, error) {
 }
 
 // DiffDate Calculates the difference between two dates.
-func (bif bif) DiffDate(ctx context.Context, args []any) (any, error) {
+func (bif bif) DiffDate(ctx context.Context, args ...any) (any, error) {
 	if len(args) != 2 {
 		return nil, fmt.Errorf("diffdate function expects exactly two arguments")
 	}
@@ -380,7 +380,7 @@ func (bif bif) DiffDate(ctx context.Context, args []any) (any, error) {
 }
 
 // DivInt Divides two numbers and returns an integer.
-func (bif bif) DivInt(ctx context.Context, args []any) (any, error) {
+func (bif bif) DivInt(ctx context.Context, args ...any) (any, error) {
 	if len(args) != 2 {
 		return nil, fmt.Errorf("div function expects exactly two arguments")
 	}
@@ -405,7 +405,7 @@ func (bif bif) DivInt(ctx context.Context, args []any) (any, error) {
 }
 
 // DiffTime Calculates the difference between two times.
-func (bif bif) DiffTime(ctx context.Context, args []any) (any, error) {
+func (bif bif) DiffTime(ctx context.Context, args ...any) (any, error) {
 	if len(args) != 2 {
 		return nil, fmt.Errorf("difftime function expects exactly two arguments")
 	}
@@ -425,7 +425,7 @@ func (bif bif) DiffTime(ctx context.Context, args []any) (any, error) {
 }
 
 // Double Doubles a number.
-func (bif bif) Double(ctx context.Context, args []any) (any, error) {
+func (bif bif) Double(ctx context.Context, args ...any) (any, error) {
 	if len(args) != 1 {
 		return nil, fmt.Errorf("double function expects exactly two arguments")
 	}
@@ -441,7 +441,7 @@ func (bif bif) Double(ctx context.Context, args []any) (any, error) {
 }
 
 // Exp Raises a number to the power of another number.
-func (bif bif) Exp(ctx context.Context, args []any) (any, error) {
+func (bif bif) Exp(ctx context.Context, args ...any) (any, error) {
 	if len(args) != 2 {
 		return nil, fmt.Errorf("exp function expects exactly two arguments")
 	}
@@ -467,7 +467,7 @@ func (bif bif) Exp(ctx context.Context, args []any) (any, error) {
 }
 
 // Filter Filters an array based on a condition.
-func (bif bif) Filter(ctx context.Context, args []any) (any, error) {
+func (bif bif) Filter(ctx context.Context, args ...any) (any, error) {
 	if len(args) != 2 {
 		return nil, fmt.Errorf("filter function expects exactly two arguments: an array and an expression")
 	}
@@ -503,7 +503,7 @@ func (bif bif) Filter(ctx context.Context, args []any) (any, error) {
 }
 
 // Floor Rounds a number down to the nearest integer.
-func (bif bif) Floor(ctx context.Context, args []any) (any, error) {
+func (bif bif) Floor(ctx context.Context, args ...any) (any, error) {
 	if len(args) != 1 {
 		return nil, fmt.Errorf("floor function expects a single argument")
 	}
@@ -519,7 +519,7 @@ func (bif bif) Floor(ctx context.Context, args []any) (any, error) {
 }
 
 // Hypot Calculates the hypotenuse of a right-angled triangle.
-func (bif bif) Hypot(ctx context.Context, args []any) (any, error) {
+func (bif bif) Hypot(ctx context.Context, args ...any) (any, error) {
 	if len(args) != 2 {
 		return nil, fmt.Errorf("hypot function expects exactly two arguments")
 	}
@@ -545,7 +545,7 @@ func (bif bif) Hypot(ctx context.Context, args []any) (any, error) {
 }
 
 // Len Returns the length of a string or array.
-func (bif bif) Len(ctx context.Context, args []any) (any, error) {
+func (bif bif) Len(ctx context.Context, args ...any) (any, error) {
 	if len(args) != 1 {
 		return nil, fmt.Errorf("len function expects a single argument")
 	}
@@ -561,7 +561,7 @@ func (bif bif) Len(ctx context.Context, args []any) (any, error) {
 }
 
 // Log Calculates the logarithm of a number.
-func (bif bif) Log(ctx context.Context, args []any) (any, error) {
+func (bif bif) Log(ctx context.Context, args ...any) (any, error) {
 	if len(args) != 2 {
 		return nil, fmt.Errorf("log function expects exactly two arguments")
 	}
@@ -587,7 +587,7 @@ func (bif bif) Log(ctx context.Context, args []any) (any, error) {
 }
 
 // Log10 Calculates the base 10 logarithm of a number.
-func (bif bif) Log10(ctx context.Context, args []any) (any, error) {
+func (bif bif) Log10(ctx context.Context, args ...any) (any, error) {
 	if len(args) != 1 {
 		return nil, fmt.Errorf("log10 function expects a single argument")
 	}
@@ -603,7 +603,7 @@ func (bif bif) Log10(ctx context.Context, args []any) (any, error) {
 }
 
 // Log2 Calculates the base 2 logarithm of a number.
-func (bif bif) Log2(ctx context.Context, args []any) (any, error) {
+func (bif bif) Log2(ctx context.Context, args ...any) (any, error) {
 	if len(args) != 1 {
 		return nil, fmt.Errorf("log2 function expects a single argument")
 	}
@@ -619,7 +619,7 @@ func (bif bif) Log2(ctx context.Context, args []any) (any, error) {
 }
 
 // Map Applies a function to each element of an array.
-func (bif bif) Map(ctx context.Context, args []any) (any, error) {
+func (bif bif) Map(ctx context.Context, args ...any) (any, error) {
 	if len(args) != 2 {
 		return nil, fmt.Errorf("map function expects exactly two arguments: an array and an expression")
 	}
@@ -656,7 +656,7 @@ func (bif bif) Map(ctx context.Context, args []any) (any, error) {
 }
 
 // Max Returns the maximum of two or more numbers.
-func (bif bif) Max(ctx context.Context, args []any) (any, error) {
+func (bif bif) Max(ctx context.Context, args ...any) (any, error) {
 	if len(args) < 1 {
 		return nil, fmt.Errorf("max function expects at least one argument")
 	}
@@ -686,7 +686,7 @@ func (bif bif) Max(ctx context.Context, args []any) (any, error) {
 }
 
 // Mean Calculates the mean of two or more numbers.
-func (bif bif) Mean(ctx context.Context, args []any) (any, error) {
+func (bif bif) Mean(ctx context.Context, args ...any) (any, error) {
 	if len(args) < 1 {
 		return nil, fmt.Errorf("mean function expects at least one argument")
 	}
@@ -707,7 +707,7 @@ func (bif bif) Mean(ctx context.Context, args []any) (any, error) {
 }
 
 // Median Calculates the median of two or more numbers.
-func (bif bif) Median(ctx context.Context, args []any) (any, error) {
+func (bif bif) Median(ctx context.Context, args ...any) (any, error) {
 	var median = func(a []float64) (float64, error) {
 		if len(a) == 0 {
 			return 0, nil
@@ -744,7 +744,7 @@ func (bif bif) Median(ctx context.Context, args []any) (any, error) {
 }
 
 // Min Returns the minimum of two or more numbers.
-func (bif bif) Min(ctx context.Context, args []any) (any, error) {
+func (bif bif) Min(ctx context.Context, args ...any) (any, error) {
 	if len(args) < 1 {
 		return nil, fmt.Errorf("min function expects at least one argument")
 	}
@@ -798,7 +798,7 @@ func (bif bif) Min(ctx context.Context, args []any) (any, error) {
 }
 
 // Mod Returns the remainder of a division.
-func (bif bif) Mod(ctx context.Context, args []any) (any, error) {
+func (bif bif) Mod(ctx context.Context, args ...any) (any, error) {
 	if len(args) != 2 {
 		return nil, fmt.Errorf("mod function expects exactly two arguments")
 	}
@@ -824,7 +824,7 @@ func (bif bif) Mod(ctx context.Context, args []any) (any, error) {
 }
 
 // Mode Returns the mode of two or more numbers.
-func (bif bif) Mode(ctx context.Context, args []any) (any, error) {
+func (bif bif) Mode(ctx context.Context, args ...any) (any, error) {
 	if len(args) < 1 {
 		return nil, fmt.Errorf("mode function expects at least one argument")
 	}
@@ -867,7 +867,7 @@ func (bif bif) Mode(ctx context.Context, args []any) (any, error) {
 }
 
 // Mul Multiplies two numbers together.
-func (bif bif) Mul(ctx context.Context, args []any) (any, error) {
+func (bif bif) Mul(ctx context.Context, args ...any) (any, error) {
 	if len(args) != 2 {
 		return nil, fmt.Errorf("mul function expects exactly two arguments")
 	}
@@ -893,7 +893,7 @@ func (bif bif) Mul(ctx context.Context, args []any) (any, error) {
 }
 
 // Pow Raises a number to the power of another number.
-func (bif bif) Pow(ctx context.Context, args []any) (any, error) {
+func (bif bif) Pow(ctx context.Context, args ...any) (any, error) {
 	if len(args) != 2 {
 		return nil, fmt.Errorf("pow function expects exactly two arguments")
 	}
@@ -919,7 +919,7 @@ func (bif bif) Pow(ctx context.Context, args []any) (any, error) {
 }
 
 // Predict Predicts the next word in a sentence.
-func (bif bif) Predict(ctx context.Context, args []any) (any, error) {
+func (bif bif) Predict(ctx context.Context, args ...any) (any, error) {
 	if len(args) != 2 {
 		return nil, fmt.Errorf("predict function expects exactly two arguments")
 	}
@@ -939,7 +939,7 @@ func (bif bif) Predict(ctx context.Context, args []any) (any, error) {
 }
 
 // Rad2Deg Converts radians to degrees.
-func (bif bif) Rad2Deg(ctx context.Context, args []any) (any, error) {
+func (bif bif) Rad2Deg(ctx context.Context, args ...any) (any, error) {
 	if len(args) != 1 {
 		return nil, fmt.Errorf("rad2deg function expects a single argument")
 	}
@@ -955,7 +955,7 @@ func (bif bif) Rad2Deg(ctx context.Context, args []any) (any, error) {
 }
 
 // Rand Generates a random number.
-func (bif bif) Rand(ctx context.Context, args []any) (any, error) {
+func (bif bif) Rand(ctx context.Context, args ...any) (any, error) {
 	if len(args) < 1 {
 		return nil, fmt.Errorf("rand function expects no arguments")
 	}
@@ -993,7 +993,7 @@ func (bif bif) Rand(ctx context.Context, args []any) (any, error) {
 }
 
 // Reduce Reduces an array to a single value.
-func (bif bif) Reduce(ctx context.Context, args []any) (any, error) {
+func (bif bif) Reduce(ctx context.Context, args ...any) (any, error) {
 	if len(args) < 2 || len(args) > 3 {
 		return nil, fmt.Errorf("reduce function expects two or three arguments: an array, a function, and an optional initial value")
 	}
@@ -1012,7 +1012,7 @@ func (bif bif) Reduce(ctx context.Context, args []any) (any, error) {
 		}
 	case bifFunc:
 		fun = arg
-	case func(context.Context, []any) (any, error):
+	case func(context.Context, ...any) (any, error):
 		fun = arg
 	default:
 		return nil, fmt.Errorf("second argument should be a function identifier or a function")
@@ -1032,7 +1032,7 @@ func (bif bif) Reduce(ctx context.Context, args []any) (any, error) {
 	for _, element := range array[startIdx:] {
 		var err error
 		in := accumulator
-		accumulator, err = fun(ctx, []any{in, element})
+		accumulator, err = fun(ctx, in, element)
 		if err != nil {
 			return nil, err
 		}
@@ -1042,7 +1042,7 @@ func (bif bif) Reduce(ctx context.Context, args []any) (any, error) {
 }
 
 // Reverse Reverses a string or array.
-func (bif bif) Reverse(ctx context.Context, args []any) (any, error) {
+func (bif bif) Reverse(ctx context.Context, args ...any) (any, error) {
 	if len(args) != 1 {
 		return nil, fmt.Errorf("reverse function expects a single argument")
 	}
@@ -1065,7 +1065,7 @@ func (bif bif) Reverse(ctx context.Context, args []any) (any, error) {
 }
 
 // Root Calculates the nth root of a number.
-func (bif bif) Root(ctx context.Context, args []any) (any, error) {
+func (bif bif) Root(ctx context.Context, args ...any) (any, error) {
 	if len(args) != 2 {
 		return nil, fmt.Errorf("root function expects exactly two arguments")
 	}
@@ -1091,7 +1091,7 @@ func (bif bif) Root(ctx context.Context, args []any) (any, error) {
 }
 
 // Round Rounds a number to the nearest integer.
-func (bif bif) Round(ctx context.Context, args []any) (any, error) {
+func (bif bif) Round(ctx context.Context, args ...any) (any, error) {
 	if len(args) != 1 {
 		return nil, fmt.Errorf("round function expects a single argument")
 	}
@@ -1107,7 +1107,7 @@ func (bif bif) Round(ctx context.Context, args []any) (any, error) {
 }
 
 // Shuffle Shuffles an array.
-func (bif bif) Shuffle(ctx context.Context, args []any) (any, error) {
+func (bif bif) Shuffle(ctx context.Context, args ...any) (any, error) {
 	if len(args) != 1 {
 		return nil, fmt.Errorf("shuffle function expects a single argument")
 	}
@@ -1126,7 +1126,7 @@ func (bif bif) Shuffle(ctx context.Context, args []any) (any, error) {
 }
 
 // Sin Calculates the sine of an angle in radians.
-func (bif bif) Sin(ctx context.Context, args []any) (any, error) {
+func (bif bif) Sin(ctx context.Context, args ...any) (any, error) {
 	if len(args) != 1 {
 		return nil, fmt.Errorf("sin function expects a single argument")
 	}
@@ -1142,7 +1142,7 @@ func (bif bif) Sin(ctx context.Context, args []any) (any, error) {
 }
 
 // Sinh Calculates the hyperbolic sine of a number.
-func (bif bif) Sinh(ctx context.Context, args []any) (any, error) {
+func (bif bif) Sinh(ctx context.Context, args ...any) (any, error) {
 	if len(args) != 1 {
 		return nil, fmt.Errorf("sinh function expects a single argument")
 	}
@@ -1158,7 +1158,7 @@ func (bif bif) Sinh(ctx context.Context, args []any) (any, error) {
 }
 
 // Slice Returns a portion of an array.
-func (bif bif) Slice(ctx context.Context, args []any) (any, error) {
+func (bif bif) Slice(ctx context.Context, args ...any) (any, error) {
 	if len(args) != 3 {
 		return nil, fmt.Errorf("slice function expects exactly three arguments")
 	}
@@ -1182,7 +1182,7 @@ func (bif bif) Slice(ctx context.Context, args []any) (any, error) {
 }
 
 // Sort Sorts an array.
-func (bif bif) Sort(ctx context.Context, args []any) (any, error) {
+func (bif bif) Sort(ctx context.Context, args ...any) (any, error) {
 	if len(args) != 1 {
 		return nil, fmt.Errorf("sort function expects a single argument")
 	}
@@ -1224,7 +1224,7 @@ func (bif bif) Sort(ctx context.Context, args []any) (any, error) {
 }
 
 // StdDev Calculates the standard deviation of two or more numbers.
-func (bif bif) StdDev(ctx context.Context, args []any) (any, error) {
+func (bif bif) StdDev(ctx context.Context, args ...any) (any, error) {
 	if len(args) < 1 {
 		return nil, fmt.Errorf("stddev function expects at least one argument")
 	}
@@ -1257,7 +1257,7 @@ func (bif bif) StdDev(ctx context.Context, args []any) (any, error) {
 }
 
 // Sub Subtracts two numbers.
-func (bif bif) Sub(ctx context.Context, args []any) (any, error) {
+func (bif bif) Sub(ctx context.Context, args ...any) (any, error) {
 	if len(args) != 2 {
 		return nil, fmt.Errorf("sub function expects exactly two arguments")
 	}
@@ -1282,7 +1282,7 @@ func (bif bif) Sub(ctx context.Context, args []any) (any, error) {
 }
 
 // Sqrt Calculates the square root of a number.
-func (bif bif) Sqrt(ctx context.Context, args []any) (any, error) {
+func (bif bif) Sqrt(ctx context.Context, args ...any) (any, error) {
 	if len(args) != 1 {
 		return nil, fmt.Errorf("time function expects a single argument")
 	}
@@ -1298,7 +1298,7 @@ func (bif bif) Sqrt(ctx context.Context, args []any) (any, error) {
 }
 
 // Sum Returns the sum of two or more numbers.
-func (bif bif) Sum(ctx context.Context, args []any) (any, error) {
+func (bif bif) Sum(ctx context.Context, args ...any) (any, error) {
 	if len(args) < 1 {
 		return nil, fmt.Errorf("sum function expects a single argument")
 	}
@@ -1312,7 +1312,7 @@ func (bif bif) Sum(ctx context.Context, args []any) (any, error) {
 		case float64:
 			sum += a
 		case []any:
-			ssum, _ := bif.Sum(ctx, a)
+			ssum, _ := bif.Sum(ctx, a...)
 			sum += ssum.(float64)
 		default:
 			return nil, fmt.Errorf("sum function expects number arguments")
@@ -1323,7 +1323,7 @@ func (bif bif) Sum(ctx context.Context, args []any) (any, error) {
 }
 
 // Unique Returns unique elements from an array.
-func (bif bif) Unique(ctx context.Context, args []any) (any, error) {
+func (bif bif) Unique(ctx context.Context, args ...any) (any, error) {
 	if len(args) != 1 {
 		return nil, fmt.Errorf("unique function expects a single argument")
 	}
@@ -1345,7 +1345,7 @@ func (bif bif) Unique(ctx context.Context, args []any) (any, error) {
 }
 
 // Tan Calculates the tangent of an angle in radians.
-func (bif bif) Tan(ctx context.Context, args []any) (any, error) {
+func (bif bif) Tan(ctx context.Context, args ...any) (any, error) {
 	if len(args) != 1 {
 		return nil, fmt.Errorf("tan function expects a single argument")
 	}
@@ -1361,7 +1361,7 @@ func (bif bif) Tan(ctx context.Context, args []any) (any, error) {
 }
 
 // Tanh Calculates the hyperbolic tangent of a number.
-func (bif bif) Tanh(ctx context.Context, args []any) (any, error) {
+func (bif bif) Tanh(ctx context.Context, args ...any) (any, error) {
 	if len(args) != 1 {
 		return nil, fmt.Errorf("tanh function expects a single argument")
 	}
@@ -1377,7 +1377,7 @@ func (bif bif) Tanh(ctx context.Context, args []any) (any, error) {
 }
 
 // Time Parses a string into a time.
-func (bif bif) Time(ctx context.Context, args []any) (any, error) {
+func (bif bif) Time(ctx context.Context, args ...any) (any, error) {
 	if len(args) != 1 {
 		return nil, fmt.Errorf("time function expects a single argument")
 	}
@@ -1395,7 +1395,7 @@ func (bif bif) Time(ctx context.Context, args []any) (any, error) {
 }
 
 // Variance Calculates the variance of two or more numbers.
-func (bif bif) Variance(ctx context.Context, args []any) (any, error) {
+func (bif bif) Variance(ctx context.Context, args ...any) (any, error) {
 	if len(args) < 2 {
 		return nil, fmt.Errorf("variance function expects at least two arguments")
 	}
