@@ -1,26 +1,25 @@
 package expronaut
 
-import "fmt"
+import (
+	"fmt"
+)
 
 type TokenType string
 
 const (
-	TokenTypeEOF TokenType = "EOF"
-
-	TokenTypeInt       TokenType = "INT"
-	TokenTypeFloat     TokenType = "FLOAT"
-	TokenTypeParenLeft TokenType = "PAREN_LEFT"
-
-	TokenTypeParenRight TokenType = "PAREN_RIGHT"
-	TokenTypeIllegal    TokenType = "ILLEGAL"
-	TokenTypeString     TokenType = "STRING"
-	TokenTypeVariable   TokenType = "VARIABLE"
-	TokenTypeFunction   TokenType = "FUNCTION"
-	TokenTypeArray      TokenType = "ARRAY"
-	TokenTypeArrayStart TokenType = "ARRAY_START"
-	TokenTypeArrayEnd   TokenType = "ARRAY_END"
-	TokenTypeComma      TokenType = "COMMA"
-
+	TokenTypeEOF                TokenType = "EOF"
+	TokenTypeIllegal            TokenType = "ILLEGAL"
+	TokenTypeParenLeft          TokenType = "PAREN_LEFT"
+	TokenTypeParenRight         TokenType = "PAREN_RIGHT"
+	TokenTypeInt                TokenType = "INT"
+	TokenTypeFloat              TokenType = "FLOAT"
+	TokenTypeString             TokenType = "STRING"
+	TokenTypeVariable           TokenType = "VARIABLE"
+	TokenTypeFunction           TokenType = "FUNCTION"
+	TokenTypeArray              TokenType = "ARRAY"
+	TokenTypeArrayStart         TokenType = "ARRAY_START"
+	TokenTypeArrayEnd           TokenType = "ARRAY_END"
+	TokenTypeComma              TokenType = "COMMA"
 	TokenTypeAnd                TokenType = "AND"
 	TokenTypeOr                 TokenType = "OR"
 	TokenTypePlus               TokenType = "PLUS"
@@ -84,10 +83,11 @@ type Lexer struct {
 	position     int  // Current position in input (points to current char)
 	readPosition int  // Current reading position in input (after current char)
 	ch           byte // Current char under examination
+	errors       []error
 }
 
 func NewLexer(input string) *Lexer {
-	l := &Lexer{input: input}
+	l := &Lexer{input: input, errors: []error{}}
 	l.readChar() // Initialize the first character
 	return l
 }
@@ -254,6 +254,7 @@ func (l *Lexer) NextToken() Token {
 	}
 
 	l.readChar()
+
 	return tok
 }
 
@@ -271,6 +272,14 @@ func (l *Lexer) peekChar() byte {
 	}
 }
 
+func (l *Lexer) peek2Char() byte {
+	if l.readPosition+1 >= len(l.input) {
+		return 0
+	} else {
+		return l.input[l.readPosition+1]
+	}
+}
+
 func (l *Lexer) skipWhitespace() {
 	for l.ch == ' ' || l.ch == '\t' || l.ch == '\n' || l.ch == '\r' {
 		l.readChar()
@@ -285,22 +294,35 @@ func isLetter(ch byte) bool {
 	return ('a' <= ch && ch <= 'z') || ('A' <= ch && ch <= 'Z') || ch == '_'
 }
 
-func (l *Lexer) readNumber(isNegative bool) Token {
+func (l *Lexer) readNumber(allowNegative bool) Token {
 	position := l.position
-
 	hasDecimal := false
-	for isDigit(l.ch) || (!hasDecimal && l.ch == '.') || (isNegative && l.ch == '-') {
+	hasExponent := false
+
+	if allowNegative && l.ch == '-' {
+		// Consume the negative sign
+		l.readChar()
+	}
+
+	for isDigit(l.ch) || (!hasDecimal && l.ch == '.') || (!hasExponent && (l.ch == 'e' || l.ch == 'E')) || (hasExponent && (l.ch == '+' || l.ch == '-')) {
 		if l.ch == '.' {
 			hasDecimal = true
+		}
+		if l.ch == 'e' || l.ch == 'E' {
+			hasExponent = true
+			if l.peekChar() == '+' || l.peekChar() == '-' {
+				// Consume 'e' or 'E'
+				l.readChar()
+			}
 		}
 		l.readChar()
 	}
 
-	if hasDecimal {
-		return Token{Type: TokenTypeFloat, Literal: l.input[position:l.position]}
+	literal := l.input[position:l.position]
+	if hasDecimal || hasExponent {
+		return Token{Type: TokenTypeFloat, Literal: literal}
 	}
-
-	return Token{Type: TokenTypeInt, Literal: l.input[position:l.position]}
+	return Token{Type: TokenTypeInt, Literal: literal}
 }
 
 type identifierType string

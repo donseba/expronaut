@@ -275,6 +275,49 @@ func TestMaxNested(t *testing.T) {
 	}
 }
 
+func TestWrongSyntax(t *testing.T) {
+	input := `45 + ((1250 x 100) / 100)`
+
+	out, err := Evaluate(context.TODO(), input)
+	if err == nil {
+		t.Errorf("expected error, got %v", out)
+	}
+}
+
+func TestScientific(t *testing.T) {
+	input := `a + (b * 1e+06)`
+
+	ctx := context.TODO()
+	ctx = SetVariables(ctx, map[string]any{
+		"a": 1,
+		"b": 1,
+	})
+
+	out, err := Evaluate(ctx, input)
+	if err != nil {
+		t.Error(err)
+	}
+
+	if !equalNumber(out, 1.000001e+06) {
+		t.Errorf("expected %v, got %v", 1.000001e+06, out)
+	}
+}
+
+func TestNeg(t *testing.T) {
+	input := `2 + -1`
+
+	ctx := context.TODO()
+
+	out, err := Evaluate(ctx, input)
+	if err != nil {
+		t.Error(err)
+	}
+
+	if !equalNumber(out, 1) {
+		t.Errorf("expected %v, got %v", 1, out)
+	}
+}
+
 func TestAiGPT(t *testing.T) {
 	input := `ai("gpt", "is the following 42?", ( 21 + 21 ) )`
 

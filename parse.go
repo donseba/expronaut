@@ -1,11 +1,13 @@
 package expronaut
 
 import (
+	"fmt"
 	"strconv"
 )
 
 type Parser struct {
 	tokens  []Token
+	errors  []error
 	current int
 }
 
@@ -205,12 +207,62 @@ func (p *Parser) previous() Token {
 	return p.tokens[p.current-1]
 }
 
+func (p *Parser) currentToken() Token {
+	return p.tokens[p.current]
+}
+
+func (p *Parser) next() Token {
+	if p.current+1 >= len(p.tokens) {
+		return Token{Type: TokenTypeEOF, Literal: ""}
+	}
+
+	return p.tokens[p.current+1]
+}
+
+func (p *Parser) next2() Token {
+	if p.current+2 >= len(p.tokens) {
+		return Token{Type: TokenTypeEOF, Literal: ""}
+	}
+
+	return p.tokens[p.current+2]
+}
+
+func (p *Parser) isModifier(tokenType TokenType) bool {
+	if tokenType == TokenTypePlus || tokenType == TokenTypeMinus || tokenType == TokenTypeMultiply || tokenType == TokenTypeDivide || tokenType == TokenTypeModulo || tokenType == TokenTypeDivideInteger || tokenType == TokenTypeExponent {
+		return true
+	}
+	return false
+}
+
+func (p *Parser) isOperand(tokenType TokenType) bool {
+	if tokenType == TokenTypeInt || tokenType == TokenTypeFloat || tokenType == TokenTypeString || tokenType == TokenTypeBool || tokenType == TokenTypeVariable || tokenType == TokenTypeFunction || tokenType == TokenTypeArray {
+		return true
+	}
+	return false
+}
+
 // consume expects the next token to be of a given type and consumes it, or throws an error.
 func (p *Parser) consume(tokenType TokenType, message string) Token {
+	if p.isOperand(tokenType) && p.isOperand(p.next().Type) {
+		p.errors = append(p.errors, fmt.Errorf("operand should be followed by a modifier: got: %s(%v), next: %s(%v)", p.currentToken().Type, p.currentToken().Literal, p.next().Type, p.next().Literal))
+	}
+
 	if p.check(tokenType) {
 		return p.advance()
 	}
-	panic(message) // Or handle the error more gracefully
+
+	if tokenType == TokenTypeParenRight {
+		// keep going until we find the closing parenthesis
+		for !p.check(TokenTypeParenRight) {
+			p.consume(p.peek().Type, "Expect ')' after expression.")
+		}
+
+		return p.advance()
+	}
+
+	p.errors = append(p.errors, fmt.Errorf("%s: got: %s", message, tokenType))
+
+	return p.peek()
 }
 
 // check looks at the current token and returns true if it matches the given type.
@@ -236,6 +288,7 @@ func (p *Parser) advance() Token {
 	if !p.isAtEnd() {
 		p.current++
 	}
+
 	return p.tokens[p.current-1]
 }
 

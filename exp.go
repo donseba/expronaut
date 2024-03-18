@@ -20,8 +20,17 @@ func SetVariables(ctx context.Context, variables map[string]any) context.Context
 
 func Evaluate(ctx context.Context, comparison string) (any, error) {
 	lexer := NewLexer(comparison)
+
+	if lexer.errors != nil && len(lexer.errors) > 0 {
+		return nil, lexer.errors[0]
+	}
+
 	p := NewParser(lexer)
 	tree := p.Parse()
+
+	if p.errors != nil && len(p.errors) > 0 {
+		return nil, p.errors[0]
+	}
 
 	return tree.Evaluate(ctx)
 }
