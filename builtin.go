@@ -2,11 +2,15 @@ package expronaut
 
 import (
 	"context"
+	"crypto/sha256"
+	"crypto/sha512"
 	"errors"
 	"fmt"
 	"github.com/donseba/expronaut/llm"
+	"io"
 	"math"
 	"math/rand"
+	"os"
 	"sort"
 	"time"
 )
@@ -26,77 +30,86 @@ func init() {
 	b := BuiltinFunctions
 
 	// mathematical functions
-	b["add"] = b.Add
-	b["sub"] = b.Sub
-	b["mul"] = b.Mul
-	b["div"] = b.Div
-	b["divint"] = b.DivInt
-	b["mod"] = b.Mod
-	b["exp"] = b.Exp
-	b["sqrt"] = b.Sqrt
-	b["pow"] = b.Pow
-	b["log"] = b.Log
-	b["log10"] = b.Log10
-	b["log2"] = b.Log2
-	b["sin"] = b.Sin
-	b["cos"] = b.Cos
-	b["tan"] = b.Tan
-	b["asin"] = b.Asin
-	b["acos"] = b.Acos
-	b["atan"] = b.Atan
-	b["sinh"] = b.Sinh
-	b["cosh"] = b.Cosh
-	b["tanh"] = b.Tanh
-	b["ceil"] = b.Ceil
-	b["floor"] = b.Floor
-	b["round"] = b.Round
-	b["abs"] = b.Abs
-	b["double"] = b.Double
-	b["root"] = b.Root
+	b["add"] = b.Add       // add two numbers
+	b["sub"] = b.Sub       // subtract two numbers
+	b["mul"] = b.Mul       // multiply two numbers
+	b["div"] = b.Div       // divide two numbers
+	b["divint"] = b.DivInt // divide two numbers and return the integer remainder 5//4=1
+	b["mod"] = b.Mod       // modulo of two numbers
+	b["exp"] = b.Exp       // raise a number to the power of another number
+	b["sqrt"] = b.Sqrt     // square root of a number
+	b["pow"] = b.Pow       // raise a number to the power of another number
+	b["log"] = b.Log       // logarithm of a number
+	b["log10"] = b.Log10   // base 10 logarithm of a number
+	b["log2"] = b.Log2     // base 2 logarithm of a number
+	b["sin"] = b.Sin       // sine of an angle in radians
+	b["cos"] = b.Cos       // cosine of an angle in radians
+	b["tan"] = b.Tan       // tangent of an angle in radians
+	b["asin"] = b.Asin     // arc sine of a value
+	b["acos"] = b.Acos     // arc cosine of a value
+	b["atan"] = b.Atan     // arc tangent of a value
+	b["sinh"] = b.Sinh     // hyperbolic sine of a number
+	b["cosh"] = b.Cosh     // hyperbolic cosine of a number
+	b["tanh"] = b.Tanh     // hyperbolic tangent of a number
+	b["ceil"] = b.Ceil     // round a number up to the nearest integer
+	b["floor"] = b.Floor   // round a number down to the nearest integer
+	b["round"] = b.Round   // round a number to the nearest integer
+	b["abs"] = b.Abs       // absolute value of a number
+	b["double"] = b.Double // double a number
+	b["root"] = b.Root     // nth root of a number
 
-	b["hypot"] = b.Hypot
-	b["deg2rad"] = b.Deg2Rad
-	b["rad2deg"] = b.Rad2Deg
+	b["hypot"] = b.Hypot     // hypotenuse of a right-angled triangle
+	b["deg2rad"] = b.Deg2Rad // convert degrees to radians
+	b["rad2deg"] = b.Rad2Deg // convert radians to degrees
 
 	// statistical functions
-	b["mean"] = b.Mean
-	b["median"] = b.Median
-	b["stddev"] = b.StdDev
-	b["max"] = b.Max
-	b["min"] = b.Min
+	b["mean"] = b.Mean     // mean of two or more numbers
+	b["median"] = b.Median // median of two or more numbers
+	b["stddev"] = b.StdDev // standard deviation of two or more numbers
+	b["max"] = b.Max       // maximum of two or more numbers
+	b["min"] = b.Min       // minimum of two or more numbers
 
 	// array functions
-	b["filter"] = b.Filter
-	b["map"] = b.Map
-	b["reduce"] = b.Reduce
-	b["sum"] = b.Sum
-	b["shuffle"] = b.Shuffle
-	b["concat"] = b.Concat
-	b["reverse"] = b.Reverse
-	b["sort"] = b.Sort
-	b["unique"] = b.Unique
-	b["slice"] = b.Slice
+	b["filter"] = b.Filter   // filter an array based on a condition
+	b["map"] = b.Map         // apply a function to each element of an array
+	b["reduce"] = b.Reduce   // reduce an array to a single value
+	b["sum"] = b.Sum         // sum of two or more numbers
+	b["shuffle"] = b.Shuffle // shuffle an array
+	b["concat"] = b.Concat   // concatenate two or more arrays
+	b["reverse"] = b.Reverse // reverse an array
+	b["sort"] = b.Sort       // sort an array
+	b["unique"] = b.Unique   // remove duplicate elements from an array
+	b["slice"] = b.Slice     // slice an array
 
 	// random functions
-	b["rand"] = b.Rand
+	b["rand"] = b.Rand // generate a random number
 
 	// date and time functions
-	b["date"] = b.Date
-	b["time"] = b.Time
-	b["datetime"] = b.DateTime
-	b["diffdate"] = b.DiffDate
-	b["difftime"] = b.DiffTime
+	b["date"] = b.Date         // parse a string into a date
+	b["time"] = b.Time         // parse a string into a time
+	b["datetime"] = b.DateTime // parse a string into a date and time
+	b["diffdate"] = b.DiffDate // difference between two dates
+	b["difftime"] = b.DiffTime // difference between two times
 
 	// utility functions
-	b["len"] = b.Len
+	b["len"] = b.Len // length of a string or array
+	b["env"] = b.Env // get an environment variable
+
+	// hashing functions
+	b["sha256"] = b.Sha256 // SHA-256 hash
+	b["sha512"] = b.Sha512 // SHA-512 hash
 
 	// statistical functions
-	b["mode"] = b.Mode
-	b["variance"] = b.Variance
+	b["mode"] = b.Mode         // mode of two or more numbers
+	b["variance"] = b.Variance // variance of two or more numbers
+
+	// monetary functions
+	b["pv"] = b.Pv // present value of an investment at a specified rate of return
+	b["fv"] = b.Fv // future value of an investment at a specified rate of return
 
 	// AI functions
-	b["ai"] = b.Ai
-	b["predict"] = b.Predict
+	b["ai"] = b.Ai           // call an AI provider to generate a response
+	b["predict"] = b.Predict // predict the value of a time series
 }
 
 // Abs Calculates the absolute value of a number.
@@ -440,6 +453,20 @@ func (bif bif) Double(ctx context.Context, args ...any) (any, error) {
 	return nil, nil
 }
 
+// Env Retrieves an environment variable.
+func (bif bif) Env(ctx context.Context, args ...any) (any, error) {
+	if len(args) != 1 {
+		return nil, fmt.Errorf("env function expects a single argument")
+	}
+
+	key, ok := args[0].(string)
+	if !ok {
+		return nil, fmt.Errorf("env function expects a string argument")
+	}
+
+	return os.Getenv(key), nil
+}
+
 // Exp Raises a number to the power of another number.
 func (bif bif) Exp(ctx context.Context, args ...any) (any, error) {
 	if len(args) != 2 {
@@ -516,6 +543,52 @@ func (bif bif) Floor(ctx context.Context, args ...any) (any, error) {
 	default:
 		return nil, fmt.Errorf("floor function expects a number argument")
 	}
+}
+
+// Fv Calculates the future value of an investment at a specified rate of return.
+func (bif bif) Fv(ctx context.Context, args ...any) (any, error) {
+	if len(args) != 3 {
+		return nil, fmt.Errorf("fv function expects exactly three arguments: present value, interest rate, and number of periods")
+	}
+
+	var (
+		pv   float64
+		rate float64
+		n    float64
+	)
+
+	switch a := args[0].(type) {
+	case int:
+		pv = float64(a)
+	case float64:
+		pv = a
+	default:
+		return nil, fmt.Errorf("first argument (present value) must be a number")
+	}
+
+	switch a := args[1].(type) {
+	case int:
+		rate = float64(a)
+	case float64:
+		rate = a
+	default:
+		return nil, fmt.Errorf("second argument (interest rate) must be a number")
+	}
+
+	switch a := args[2].(type) {
+	case int:
+		n = float64(a)
+	case float64:
+		n = a
+	default:
+		return nil, fmt.Errorf("third argument (number of periods) must be a number")
+	}
+
+	// Calculate the future value
+	fvr := math.Pow(1+rate, n)
+	fv := pv * fvr
+
+	return fv, nil
 }
 
 // Hypot Calculates the hypotenuse of a right-angled triangle.
@@ -938,6 +1011,61 @@ func (bif bif) Predict(ctx context.Context, args ...any) (any, error) {
 
 }
 
+// Pv Calculates the present value of an investment at a specified rate of return.
+func (bif bif) Pv(ctx context.Context, args ...any) (any, error) {
+	if len(args) != 3 {
+		return nil, fmt.Errorf("pv function expects exactly three arguments")
+	}
+
+	// fv float64, r float64, n float64
+	var (
+		fv float64
+		n  float64
+		r  float64
+	)
+
+	switch a := args[0].(type) {
+	case int:
+		fv = float64(a)
+	case float64:
+		fv = a
+	default:
+		return nil, fmt.Errorf("pv function expects a number argument")
+	}
+
+	switch a := args[1].(type) {
+	case int:
+		r = float64(a)
+	case float64:
+		r = a
+	default:
+		return nil, fmt.Errorf("pv function expects a number argument")
+	}
+
+	switch a := args[2].(type) {
+	case int:
+		n = float64(a)
+	case float64:
+		n = a
+	default:
+		return nil, fmt.Errorf("pv function expects a number argument")
+	}
+
+	// Calculate (1 + r)^n using the Pow method
+	denominator, err := bif.Pow(ctx, 1+r, n)
+	if err != nil {
+		return 0, err
+	}
+
+	// Divide FV by (1 + r)^n
+	pv, err := bif.Div(ctx, fv, denominator)
+	if err != nil {
+		return 0, err
+	}
+
+	return pv, nil
+}
+
 // Rad2Deg Converts radians to degrees.
 func (bif bif) Rad2Deg(ctx context.Context, args ...any) (any, error) {
 	if len(args) != 1 {
@@ -1103,6 +1231,54 @@ func (bif bif) Round(ctx context.Context, args ...any) (any, error) {
 		return int(math.Round(arg)), nil
 	default:
 		return nil, fmt.Errorf("round function expects a number argument")
+	}
+}
+
+// Sha256 Calculates the SHA-256 hash of the input
+func (bif bif) Sha256(ctx context.Context, args ...any) (any, error) {
+	if len(args) != 1 {
+		return nil, fmt.Errorf("sha256 function expects a single argument")
+	}
+
+	switch arg := args[0].(type) {
+	case string:
+		h := sha256.New()
+		_, _ = io.WriteString(h, arg)
+		return string(h.Sum(nil)), nil
+	case int:
+		h := sha256.New()
+		_, _ = io.WriteString(h, fmt.Sprintf("%d", arg))
+		return string(h.Sum(nil)), nil
+	case float64:
+		h := sha256.New()
+		_, _ = io.WriteString(h, fmt.Sprintf("%f", arg))
+		return string(h.Sum(nil)), nil
+	default:
+		return nil, fmt.Errorf("sha256 function expects a string argument")
+	}
+}
+
+// Sha512 Calculates the SHA-512 hash of the input.
+func (bif bif) Sha512(ctx context.Context, args ...any) (any, error) {
+	if len(args) != 1 {
+		return nil, fmt.Errorf("sha512 function expects a single argument")
+	}
+
+	switch arg := args[0].(type) {
+	case string:
+		h := sha512.New()
+		_, _ = io.WriteString(h, arg)
+		return string(h.Sum(nil)), nil
+	case int:
+		h := sha512.New()
+		_, _ = io.WriteString(h, fmt.Sprintf("%d", arg))
+		return string(h.Sum(nil)), nil
+	case float64:
+		h := sha512.New()
+		_, _ = io.WriteString(h, fmt.Sprintf("%f", arg))
+		return string(h.Sum(nil)), nil
+	default:
+		return nil, fmt.Errorf("sha512 function expects a string argument")
 	}
 }
 

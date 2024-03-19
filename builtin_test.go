@@ -3,6 +3,7 @@ package expronaut
 import (
 	"context"
 	"fmt"
+	"os"
 	"testing"
 	"time"
 )
@@ -317,6 +318,28 @@ func TestBif_Double(t *testing.T) {
 	}
 }
 
+func TestBif_Env(t *testing.T) {
+	err := os.Setenv("TEST42", "42")
+	if err != nil {
+		t.Skip("could not set environment variable")
+	}
+
+	input := `env("TEST42")`
+	lexer := NewLexer(input)
+
+	p := NewParser(lexer)
+	tree := p.Parse()
+
+	out, err := tree.Evaluate(nil)
+	if err != nil {
+		t.Error(err)
+	}
+
+	if out != "42" {
+		t.Errorf("expected 42, got %v", out)
+	}
+}
+
 func TestBif_Exp(t *testing.T) {
 	input := `exp(5,2)`
 	lexer := NewLexer(input)
@@ -369,6 +392,23 @@ func TestBif_Floor(t *testing.T) {
 	expected := 5
 	if !equalNumber(out, expected) {
 		t.Errorf("expected %v, got %v", expected, out)
+	}
+}
+
+func TestBif_Fv(t *testing.T) {
+	input := `fv(1000,0.05,10)`
+
+	lexer := NewLexer(input)
+	p := NewParser(lexer)
+	tree := p.Parse()
+
+	out, err := tree.Evaluate(nil)
+	if err != nil {
+		t.Error(err)
+	}
+
+	if !equalNumber(out, 1628.8946267774415) {
+		t.Errorf("expected 1628.8946267774415, got %v", out)
 	}
 }
 
@@ -667,6 +707,23 @@ func TestBif_Pow(t *testing.T) {
 
 func TestBif_Predict(t *testing.T) {
 	t.Skip("not implemented")
+}
+
+func TestBif_Pv(t *testing.T) {
+	input := `pv(1000,0.05,10)`
+
+	lexer := NewLexer(input)
+	p := NewParser(lexer)
+	tree := p.Parse()
+
+	out, err := tree.Evaluate(nil)
+	if err != nil {
+		t.Error(err)
+	}
+
+	if !equalNumber(out, 613.9132535409655) {
+		t.Errorf("expected 613.9132535409655, got %v", out)
+	}
 }
 
 func TestBif_Rad2Deg(t *testing.T) {
